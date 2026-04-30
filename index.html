@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Salvaje</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#1E3D0F;--verde2:#2D5A1B;--verde3:#4A7C35;--verde-pal:#EAF3DE;--rojo:#B5380C;--crema:#F8F5EF;--crema2:#EDE8DF;--oro:#8B6914;--txt:#1A1A14;--txt2:#6B6B5E;--txt3:#9A9A8E;--b:rgba(30,61,15,0.12)}
+body{font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--txt);font-size:15px}
+.hdr{background:var(--verde);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;position:sticky;top:0;z-index:99}
+.logo{width:34px;height:34px;background:var(--oro);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;color:#fff;font-weight:600}
+.hdr-brand{display:flex;align-items:center;gap:12px}
+.hdr-name{font-family:'Playfair Display',serif;font-size:17px;color:#fff}
+.hdr-sub{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px}
+.hdr-r{font-size:11px;color:rgba(255,255,255,.4)}
+.main{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.filtros{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem}
+.filtros label{font-size:13px;color:var(--txt2)}
+select{font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 28px 7px 10px;border-radius:8px;border:1px solid var(--b);background:#fff;color:var(--txt);cursor:pointer;outline:none}
+.mets{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.75rem}
+@media(max-width:600px){.mets{grid-template-columns:1fr}}
+.met{background:#fff;border-radius:12px;border:1px solid var(--b);padding:1.25rem;border-top:3px solid transparent}
+.met.i{border-top-color:var(--verde3)}.met.g{border-top-color:var(--rojo)}.met.r{border-top-color:var(--oro)}
+.met-l{font-size:10px;font-weight:500;color:var(--txt3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.met-v{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1}
+.pos{color:var(--verde2)}.neg{color:var(--rojo)}.oro{color:var(--oro)}
+.met-s{font-size:11px;color:var(--txt3);margin-top:5px}
+.er{background:#fff;border-radius:12px;border:1px solid var(--b);overflow:hidden;margin-bottom:1.5rem}
+.er-hdr{background:var(--verde);padding:.9rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.er-t{font-family:'Playfair Display',serif;font-size:16px;color:#fff;font-weight:400}
+.er-p{font-size:11px;color:rgba(255,255,255,.5)}
+.er-b{padding:0 1.5rem}
+.er-sec{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt3);padding:1rem 0 .5rem;border-bottom:1px solid var(--crema2)}
+.er-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--crema2)}
+.er-cat{font-size:14px;color:var(--txt);display:flex;align-items:center;gap:8px}
+.er-cat::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ri .er-cat::before{background:var(--verde3)}.rg .er-cat::before{background:var(--rojo)}
+.er-m{font-size:14px;font-weight:500}
+.ri .er-m{color:var(--verde2)}.rg .er-m{color:var(--rojo)}
+.er-st{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.5rem;background:var(--crema);margin:0 -1.5rem;border-bottom:1px solid var(--crema2)}
+.er-stl{font-size:13px;font-weight:500;color:var(--txt2)}
+.er-stv{font-size:15px;font-weight:500}
+.er-res{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.5rem;background:var(--verde)}
+.er-rl{font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.8)}
+.er-rv{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:#fff}
+.er-rv.neg{color:#FFBDAA}
+.dc{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+@media(max-width:650px){.dc{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:12px;border:1px solid var(--b);padding:1.25rem}
+.card-t{font-family:'Playfair Display',serif;font-size:15px;color:var(--verde);font-weight:600;margin-bottom:1rem}
+.mv{display:flex;justify-content:space-between;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--crema2)}
+.mv:last-child{border-bottom:none}
+.mv-l{display:flex;gap:10px;align-items:flex-start}
+.dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.di{background:var(--verde3)}.dg{background:var(--rojo)}
+.mv-d{font-size:13px;color:var(--txt)}.mv-m2{font-size:11px;color:var(--txt3)}
+.mv-a{font-size:13px;font-weight:500;white-space:nowrap}
+.ai{color:var(--verde2)}.ag{color:var(--rojo)}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.si{background:var(--verde-pal);border-radius:10px;padding:1rem;text-align:center;border:1px solid rgba(45,90,27,.1)}
+.se{font-size:24px;margin-bottom:4px}.sn{font-size:10px;color:var(--verde2);font-weight:500;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.sv{font-family:'Playfair Display',serif;font-size:26px;color:var(--verde)}
+.empty{text-align:center;padding:2rem;color:var(--txt3);font-size:13px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--crema2);border-top-color:var(--verde3);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.carg{color:var(--txt3);font-size:13px;padding:1.5rem 0;text-align:center}
+.dbg{background:#f0f4ff;border:1px solid #c0d0ff;border-radius:8px;padding:12px;font-size:11px;color:#334;margin-bottom:1rem;font-family:monospace;display:none}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="logo">ES</div>
+    <div><div class="hdr-name">El Salvaje</div><div class="hdr-sub">Panel del campo</div></div>
+  </div>
+  <div class="hdr-r" id="hF">Cargando...</div>
+</header>
+<main class="main">
+  <div id="dbg" class="dbg"></div>
+  <div class="filtros"><label>Período:</label><select id="sel"><option value="">Todos los meses</option></select></div>
+  <div class="mets">
+    <div class="met i"><div class="met-l">Ingresos</div><div class="met-v pos" id="mI"><span class="spin"></span></div><div class="met-s" id="mIN"></div></div>
+    <div class="met g"><div class="met-l">Egresos</div><div class="met-v neg" id="mG"><span class="spin"></span></div><div class="met-s" id="mGN"></div></div>
+    <div class="met r"><div class="met-l">Resultado neto</div><div class="met-v oro" id="mR"><span class="spin"></span></div><div class="met-s">Ingresos − Egresos</div></div>
+  </div>
+  <div class="er"><div class="er-hdr"><div class="er-t">Estado de Resultados</div><div class="er-p" id="erP">—</div></div><div id="erB"><div class="carg"><span class="spin"></span>Cargando...</div></div></div>
+  <div class="dc">
+    <div class="card"><div class="card-t">Por mes</div><div style="position:relative;height:200px"><canvas id="cM" role="img" aria-label="Ingresos y egresos por mes"></canvas></div></div>
+    <div class="card"><div class="card-t">Últimos movimientos</div><div id="mvL"><div class="carg"><span class="spin"></span></div></div></div>
+  </div>
+  <div class="card" style="margin-bottom:1.5rem"><div class="card-t">Stock ganadero</div><div id="stG" class="sg"><div class="carg" style="grid-column:1/-1"><span class="spin"></span>Cargando...</div></div></div>
+</main>
+<script>
+const BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN0nA_jmDacpf5OxiAdUKthDU53fP09VkAJYqozGNxMrCy5Gp2NCD7rdXNLqZRyOQ9cVmVPXGwP0do/pub';
+const URLS = {
+  movs:  BASE + '?gid=371613032&single=true&output=csv',
+  stock: BASE + '?gid=1681751065&single=true&output=csv',
+};
+
+let allMovs=[], ch=null;
+
+function dbg(msg){ const d=document.getElementById('dbg'); d.style.display='block'; d.textContent+=msg+'\n'; }
+
+async function fetchCSV(url) {
+  dbg('Fetching: '+url.slice(0,80)+'...');
+  const r = await fetch(url, {redirect:'follow'});
+  dbg('Status: '+r.status+' OK:'+r.ok);
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const txt = await r.text();
+  dbg('Got '+txt.length+' chars. First 100: '+txt.slice(0,100));
+  const rows = txt.trim().split('\n');
+  const headers = parseCSVLine(rows[0]);
+  dbg('Headers: '+JSON.stringify(headers));
+  return rows.slice(1).map(line => {
+    const vals = parseCSVLine(line);
+    const obj = {};
+    headers.forEach((h,i) => obj[h.trim()] = (vals[i]||'').trim());
+    return obj;
+  }).filter(r => Object.values(r).some(v=>v));
+}
+
+function parseCSVLine(line) {
+  const res=[]; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){res.push(cur);cur='';}
+    else cur+=c;
+  }
+  res.push(cur);
+  return res;
+}
+
+function num(v){
+  if(!v&&v!==0)return 0;
+  let s=String(v).replace(/[^\d,.\-]/g,'');
+  if(!s)return 0;
+  const ld=s.lastIndexOf('.'),lc=s.lastIndexOf(',');
+  if(lc>ld){s=s.replace(/\./g,'').replace(',','.');}
+  else if(ld>lc){s=s.replace(/,/g,'');}
+  else s=s.replace(/,/g,'');
+  return parseFloat(s)||0;
+}
+
+function pesos(n){return '$ '+Math.abs(Math.round(n)).toLocaleString('es-AR');}
+
+function gc(row,...names){
+  for(const n of names)
+    if(row[n]!==undefined&&row[n]!==null&&String(row[n]).trim()!=='')
+      return String(row[n]).trim();
+  return '';
+}
+
+function emj(n){
+  const l=(n||'').toLowerCase();
+  if(l.includes('vaca')||l.includes('vaquillona'))return'🐄';
+  if(l.includes('novillo')||l.includes('toro'))return'🐂';
+  if(l.includes('ternero')||l.includes('ternera'))return'🐃';
+  if(l.includes('oveja')||l.includes('carnero')||l.includes('cordero'))return'🐑';
+  if(l.includes('caballo')||l.includes('yegua'))return'🐎';
+  return'🐾';
+}
+
+function render(){
+  const mes=document.getElementById('sel').value;
+  const f=allMovs.filter(r=>{
+    const m=gc(r,'Mes Año','Mes A\u00f1o','Mes Anio');
+    if(!m||m.includes('1899'))return false;
+    if(mes&&m!==mes)return false;
+    const t=gc(r,'Tipo');
+    return t==='Ingreso'||t==='Gasto';
+  });
+  dbg('Filtered rows for render: '+f.length);
+
+  const ings=f.filter(r=>gc(r,'Tipo')==='Ingreso');
+  const gass=f.filter(r=>gc(r,'Tipo')==='Gasto');
+  const sumI=ings.reduce((s,r)=>s+Math.abs(num(gc(r,'Monto Total'))),0);
+  const sumG=gass.reduce((s,r)=>s+Math.abs(num(gc(r,'Monto Total'))),0);
+  const res=sumI-sumG;
+  dbg('sumI='+sumI+' sumG='+sumG+' res='+res);
+
+  document.getElementById('mI').textContent=pesos(sumI);
+  document.getElementById('mIN').textContent=ings.length+' operación'+(ings.length!==1?'es':'');
+  document.getElementById('mG').textContent=pesos(sumG);
+  document.getElementById('mGN').textContent=gass.length+' operación'+(gass.length!==1?'es':'');
+  const rEl=document.getElementById('mR');
+  rEl.textContent=(res<0?'−':'')+pesos(res);
+  rEl.className='met-v '+(res>=0?'pos':'neg');
+  document.getElementById('erP').textContent=mes||'Todo el período';
+
+  const catI={},catG={};
+  f.forEach(r=>{
+    const cat=gc(r,'Categoria')||'Sin categoría';
+    const m=Math.abs(num(gc(r,'Monto Total')));
+    if(gc(r,'Tipo')==='Ingreso')catI[cat]=(catI[cat]||0)+m;
+    if(gc(r,'Tipo')==='Gasto')catG[cat]=(catG[cat]||0)+m;
+  });
+
+  let html='<div class="er-b"><div class="er-sec">Ingresos</div>';
+  const ie=Object.entries(catI).sort((a,b)=>b[1]-a[1]);
+  if(!ie.length)html+='<div class="er-row"><div style="color:var(--txt3);font-size:13px">Sin ingresos en el período</div></div>';
+  ie.forEach(([c,m])=>html+=`<div class="er-row ri"><div class="er-cat">${c}</div><div class="er-m">${pesos(m)}</div></div>`);
+  html+=`</div><div class="er-st"><div class="er-stl">Total ingresos</div><div class="er-stv pos">${pesos(sumI)}</div></div>`;
+  html+='<div class="er-b"><div class="er-sec">Egresos</div>';
+  const ge=Object.entries(catG).sort((a,b)=>b[1]-a[1]);
+  if(!ge.length)html+='<div class="er-row"><div style="color:var(--txt3);font-size:13px">Sin egresos en el período</div></div>';
+  ge.forEach(([c,m])=>html+=`<div class="er-row rg"><div class="er-cat">${c}</div><div class="er-m">${pesos(m)}</div></div>`);
+  html+=`</div><div class="er-st"><div class="er-stl">Total egresos</div><div class="er-stv neg">${pesos(sumG)}</div></div>`;
+  html+=`<div class="er-res"><div class="er-rl">Resultado neto</div><div class="er-rv ${res<0?'neg':''}">${res<0?'−':''}${pesos(res)}</div></div>`;
+  document.getElementById('erB').innerHTML=html;
+
+  const sorted=[...f].sort((a,b)=>gc(b,'Fecha').localeCompare(gc(a,'Fecha'))).slice(0,8);
+  document.getElementById('mvL').innerHTML=sorted.length?sorted.map(r=>{
+    const isI=gc(r,'Tipo')==='Ingreso';
+    const desc=gc(r,'Subcategoria')||gc(r,'Categoria')||'—';
+    const m=Math.abs(num(gc(r,'Monto Total')));
+    return `<div class="mv"><div class="mv-l"><div class="dot ${isI?'di':'dg'}"></div><div><div class="mv-d">${desc}</div><div class="mv-m2">${gc(r,'Fecha')} · ${gc(r,'Medio de Pago')}</div></div></div><div class="mv-a ${isI?'ai':'ag'}">${isI?'+':'−'}${pesos(m)}</div></div>`;
+  }).join(''):'<div class="empty">Sin movimientos</div>';
+
+  const bm={};
+  allMovs.filter(r=>{const m=gc(r,'Mes Año','Mes A\u00f1o','Mes Anio');return m&&!m.includes('1899')&&(gc(r,'Tipo')==='Ingreso'||gc(r,'Tipo')==='Gasto');}).forEach(r=>{
+    const m=gc(r,'Mes Año','Mes A\u00f1o','Mes Anio');
+    if(!bm[m])bm[m]={i:0,g:0};
+    const v=Math.abs(num(gc(r,'Monto Total')));
+    if(gc(r,'Tipo')==='Ingreso')bm[m].i+=v;else bm[m].g+=v;
+  });
+  const labs=Object.keys(bm).sort();
+  if(ch)ch.destroy();
+  if(labs.length)ch=new Chart(document.getElementById('cM'),{
+    type:'bar',
+    data:{labels:labs,datasets:[
+      {label:'Ingresos',data:labs.map(l=>Math.round(bm[l].i)),backgroundColor:'#4A7C35',borderRadius:4},
+      {label:'Egresos',data:labs.map(l=>Math.round(bm[l].g)),backgroundColor:'#B5380C',borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11},color:'#6B6B5E',boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#9A9A8E',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#9A9A8E',font:{size:10},callback:v=>v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'k':''+v},grid:{color:'rgba(0,0,0,.04)'}}}}
+  });
+}
+
+async function init(){
+  try{
+    const data=await fetchCSV(URLS.movs);
+    dbg('Total rows loaded: '+data.length);
+    if(data.length>0)dbg('Sample row keys: '+JSON.stringify(Object.keys(data[0])));
+    if(data.length>0)dbg('Sample row: '+JSON.stringify(data[0]));
+    allMovs=data;
+    const meses=[...new Set(data.map(r=>gc(r,'Mes Año','Mes A\u00f1o','Mes Anio')).filter(m=>m&&!m.includes('1899')))].sort();
+    dbg('Meses: '+JSON.stringify(meses));
+    const sel=document.getElementById('sel');
+    meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+    if(meses.length)sel.value=meses[meses.length-1];
+    sel.addEventListener('change',render);
+    render();
+    document.getElementById('hF').textContent='Actualizado '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){
+    dbg('ERROR: '+e.message);
+    ['mI','mG','mR'].forEach(id=>document.getElementById(id).textContent='Error');
+    document.getElementById('erB').innerHTML='<div class="empty">Error: '+e.message+'</div>';
+  }
+  try{
+    const data=await fetchCSV(URLS.stock);
+    dbg('Stock rows: '+data.length);
+    const items=data.filter(r=>gc(r,'Subcategoria')||gc(r,'Categoria'));
+    const g2=document.getElementById('stG');
+    if(!items.length){g2.innerHTML='<div class="empty">Sin datos de stock</div>';return;}
+    g2.innerHTML=items.map(r=>{
+      const name=gc(r,'Subcategoria')||gc(r,'Categoria')||'—';
+      const fin=num(gc(r,'Stock Final'));
+      if(fin===0&&!gc(r,'Categoria'))return'';
+      return`<div class="si"><div class="se">${emj(name)}</div><div class="sn">${name}</div><div class="sv">${Math.max(0,Math.round(fin))}</div></div>`;
+    }).filter(Boolean).join('')||'<div class="empty">Sin datos</div>';
+  }catch(e){dbg('Stock error: '+e.message);document.getElementById('stG').innerHTML='<div class="empty">Error al cargar stock</div>';}
+}
+
+init();
+</script>
+</body>
+</html>
